@@ -7,3 +7,4 @@ Este script muestra:
 -Permisos SUID
 -Permisos SGUID
 -Capabilities
+, y crea un archivo con cada uno de ellos.
