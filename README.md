@@ -6,3 +6,4 @@ Este script muestra:
 -Grupos a los que perteneces
 -Permisos SUID
 -Permisos SGUID
+-Capabilities
