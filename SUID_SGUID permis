@@ -10,7 +10,7 @@ purpleColour="\e[0;35m\033[1m"
 turquoiseColour="\e[0;36m\033[1m"
 grayColour="\e[0;37m\033[1m"
 
-echo -e "ip publica -->${redColour}$(curl ifconfig.me)${endColour}"
+echo -e "ip publica -->${redColour}$(curl -s ifconfig.me | awk '{print $1})${endColour}"
 echo -e "ip privada --> ${turquoiseColour}$(ip a | grep "ens33" | tail -n 1 | awk '{print $2}' | tr "/" " " | awk '{print $1}')${endColour}"
 echo -e "\n${greenColour}grupos a los que perteneces:${endColour} \n${grayColour}$(id)${endColour}"
 
