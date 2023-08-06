@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+
 ##Colours
 greenColour="\e[0;32m\033[1m"
 endColour="\033[0m\e[0m"
@@ -10,17 +10,31 @@ purpleColour="\e[0;35m\033[1m"
 turquoiseColour="\e[0;36m\033[1m"
 grayColour="\e[0;37m\033[1m"
 
-echo -e "ip publica -->${redColour}$(curl -s ifconfig.me | awk '{print $1})${endColour}"
-echo -e "ip privada --> ${turquoiseColour}$(ip a | grep "ens33" | tail -n 1 | awk '{print $2}' | tr "/" " " | awk '{print $1}')${endColour}"
-echo -e "\n${greenColour}grupos a los que perteneces:${endColour} \n${grayColour}$(id)${endColour}"
 
+function ctrl_c (){
+  echo -e "\n\n[!] Saliendo....\n"
+  tput cnorm; exit 1
+}
+
+## CTRL_C
+trap ctrl_c INT
+
+tput civis
+echo -e "ip publica -->${redColour}$(curl -s ifconfig.me)${endColour}" 
+echo -e "ip privada --> ${turquoiseColour}$(ip a | grep "ens33" | tail -n 1 | awk '{print $2}' | tr "/" " " | awk '{print $1}')${endColour}" 
+echo -e "\n${greenColour}grupos a los que perteneces:${endColour} \n${grayColour}$(id)${endColour}"
 echo -e "\n${yellowColour}---Listando Archivos SUID & SGUID---${endColour}"
-echo -e "${purpleColour}$(find / -type f -perm -4000 1>suid 2>/dev/null)${endColour}"
-echo -e "${blueColour}$(find / -type f -perm -2000 1>sguid 2>/dev/null)${endColour}"
-echo -e "${purpleColour}Permisos SUID${endColour}\n"
-echo -e "${purpleColour}$(cat suid | xargs ls -la)${endColour}\n"
-echo -e "${blueColour}Permisos SGUID${endColour}\n"
-echo -e "${blueColour}$(cat sguid | xargs ls -la)${endColour}\n"
+echo -e "${purpleColour}$(find / -type f -perm -4000 1>suid 2>/dev/null)${endColour}" &
+wait
+echo -e "${purpleColour}Permisos SUID${endColour}"
+echo -e "${purpleColour}$(cat suid | xargs ls -l)${endColour}"
+echo -e "${blueColour}$(find / -type f -perm -2000 1>sguid 2>/dev/null)${endColour}" &
+wait
+echo -e "${blueColour}Permisos SGUID${endColour}"
+echo -e "${blueColour}$(cat sguid | xargs ls -l)${endColour}"
+echo -e "${grayColour}$(getcap -r / 1>capabilities 2>/dev/null)${endColour}" &
+wait
 echo -e "${grayColour}Capabilities${endColour}" 
-echo -e "${grayColour}$(getcap -r / 1>capabilities 2>/dev/null)${endColour}"
 echo -e "${grayColour}$(cat capabilities)${endColour}"
+
+tput cnorm
